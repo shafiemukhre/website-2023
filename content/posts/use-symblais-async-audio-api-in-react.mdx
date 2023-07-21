@@ -1,0 +1,510 @@
+---
+title: "Use Symbl.ai's Async Audio API in React"
+publishedDate: "2020-05-30"
+lastUpdatedDate: "2020-05-30"
+tags:
+  - frontend
+description: How to use implement Symbl.ai's API in React using React Hooks
+status: published
+---
+
+Before we can get started, you will need to make sure to have:
+
+- A [Symbl account](https://platform.symbl.ai/#/signup)
+- [Node >= 8.10 and npm >= 5.6](https://nodejs.org/en/) for React's dependecies
+- [react](https://www.npmjs.com/package/react) >= 16.8.0 and [react-dom](https://www.npmjs.com/package/react-dom) >= 16.8.0 for Material-UI's peer dependencies
+
+## Setup React Project
+
+To create a project with Material-UI css library, run
+
+```bash
+npx create-react-app async-audio-app
+cd async-audio-app
+npm install @material-ui/core
+npm start
+```
+
+Go to `./src` folder and delete all files except `index.js`, and `App.js`. Clean the import statements accordingly in both files and return `<h1>Hello World</h1>` in `App.js` to test the application as shown below:
+
+`./src/index.js`
+
+```jsx
+import React from "react";
+import ReactDOM from "react-dom";
+
+import App from "./App";
+
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById("root")
+);
+```
+
+`./src/App.js`
+
+```jsx
+import React from "react";
+
+function App() {
+  return (
+    <div>
+      <h1>Hello World</h1>
+    </div>
+  );
+}
+
+export default App;
+```
+
+If you go to [`http://localhost:3000`](http://localhost:3000/) in the browser, you should be able to see "Hello World".
+
+# Getting Started
+
+We will be creating a react app that upload an audio file and return topics from that audio. We will be using [Async Audio API](https://docs.symbl.ai/#post-async-audio-api) to process an audio file, [Job API](https://docs.symbl.ai/#job-api) to retrieve the status of an ongoing async audio request and [Conversation API](https://docs.symbl.ai/#conversation-api) to return the topics.
+
+We will stick with a good [React folder structure](https://www.robinwieruch.de/react-folder-structure), so create a components folder inside `./src` with the following folders and files.
+
+```bash
+├── src
+    ├── components
+    │   ├── Audio
+    │   │   ├── Audio.js
+    │   │   ├── index.js
+    │   │   ├── hooks.js
+    │   │   └── style.js
+    │   └── Topics
+    │       ├── Topics.js
+    │       ├── index.js
+    │       ├── hooks.js
+    │       └── style.js
+    ├── index.js
+    ├── App.js
+    ├── store.js
+    └── auth.json
+```
+
+Add the following inside `index.js` files
+
+`.../Audio/index.js`
+
+```jsx
+export { default } from "./Audio";
+```
+
+`.../Topics/index.js`
+
+```jsx
+export { default } from "./Topics";
+```
+
+In this tutorial, we will not be making the api request for authentication from a server, instead we will be hardcording the access token inside the `auth.json` which can be use temporarily for the app. Replace `[ACCESS_TOKEN]` with your temporary access token from generated from POST Authentication request using your `appId` and `appSecret` from Symbl Platform. You can use Postman app to generate this access token as shown in this [Youtube Video](https://www.youtube.com/watch?v=zqFAPNWdxsA&list=PLheDW2BRneFZliUX7QScZ6SbPT8KUOwiJ&index=2).
+
+```json
+{
+  "accessToken": "[ACCESS_TOKEN]"
+}
+```
+
+## Building The App
+
+### Initialize Context Store
+
+We are creating the `.store.js` to store all our global state using Context API. The reasoning behind the use of Context API is because we want the Topics component to only make an api request when there's new `id` state from Audio component but we cannot pass the state in between components with props.
+
+If we are not using context for global state management, we will have to place Topics component under Audio component and pass down the state using props. While this will also works, it will create additional nested folder which is not a good practice.
+
+Create `idContext`, `loadingContext`, and `successContext` like the following in our `store.js` file.
+
+`./src/store.js`
+
+```jsx
+import React, { createContext, useState } from "react";
+
+export const idContext = createContext();
+export const loadingContext = createContext();
+export const successContext = createContext();
+
+function Store(props) {
+  const [id, setId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  return (
+    <idContext.Provider value={[id, setId]}>
+      <loadingContext.Provider value={[loading, setLoading]}>
+        <successContext.Provider value={[success, setSuccess]}>{props.children}</successContext.Provider>
+      </loadingContext.Provider>
+    </idContext.Provider>
+  );
+}
+
+export default Store;
+```
+
+Wrap `<App/>` with `<Store/>` inside `index.js` file.
+
+`./src/index.js`
+
+```jsx
+import Store from "./store";
+
+ReactDOM.render(
+  <React.StrictMode>
+    <Store>
+      <App />
+    </Store>
+  </React.StrictMode>,
+  document.getElementById("root")
+);
+```
+
+### Creating UI for uploading Audio
+
+Let's create an input button in Audio component to upload the audio file by writing the following code in `Audio.js` file.
+
+`.../Audio/Audio.js`
+
+```jsx
+import React, { useContext, useRef, useState } from "react";
+import { Box, Button, CircularProgress, Paper } from "@material-ui/core";
+import clsx from "clsx";
+
+import { loadingContext, successContext } from "../../Store";
+import useAudioAsyncAPI from "./hooks";
+import { useStyles } from "./style";
+
+export default function Audio() {
+  const inputRef = useRef();
+  const classes = useStyles();
+  const [file, setFile] = useState();
+  const [loading, setLoading] = useContext(loadingContext);
+  const [success, setSuccess] = useContext(successContext);
+
+  useAudioAsyncAPI(file);
+
+  const buttonClassname = clsx({
+    [classes.buttonSuccess]: success,
+  });
+  async function handleButtonClick() {
+    inputRef.current.click();
+    if (!loading) {
+      setSuccess(false);
+      setLoading(true);
+    }
+  }
+
+  return (
+    <div>
+      <Paper elevation={4} style={{ height: "50px" }}>
+        <Box display="flex" justifyContent="center" p={1}>
+          <div className={classes.wrapper}>
+            <input
+              type="file"
+              id="input"
+              accept="audio/mpeg, audio/wav, audio/wave"
+              onChange={() => setFile(inputRef.current.files[0])}
+              ref={inputRef}
+              style={{ display: "none" }}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              className={buttonClassname}
+              disabled={loading}
+              onClick={handleButtonClick}
+            >
+              Upload Audio
+            </Button>
+            {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+          </div>
+        </Box>
+      </Paper>
+    </div>
+  );
+}
+```
+
+In the above code snippet, we are creating a `<Button/>` with `onClick` event listener that will call an `<input/>` form through React's `useRef` so that we can upload our audio file. The `<input/>` form will only accept audio MIME type files such as "audio/mpeg", "audio/wav" and "audio/wave".
+
+The `<input/>` form has an `onChange` event listener that will update the `file` state with the new audio file path. It is important to note that we are using `useRef` here in order to get the reference object of the uploaded audio file instead of shallow copy of the file path which will appear as a string of "C://fakepath/audiofilename.wav".
+
+Upon uploading, when the `loading` state is `true`, it will render a `<CircularProgress/>` until the api call in the custom hook `useAudioAsyncAPI` is completed.
+
+### Fetch Async Audio API and Job API in useEffect
+
+Let's code the fetch request using `fetch` in react's `useEffect` inside the `.hooks.js` file.
+
+`.../Audio/hooks.js`
+
+```jsx
+import {useEffect, useContext } from 'react'
+import auth from '../../auth.json'
+import { idContext, loadingContext, successContext } from '../../Store';
+
+export default function useAudioAsyncAPI(file){
+    const [id, setId] = useContext(idContext)
+    const [, setLoading] = useContext(loadingContext)
+    const [, setSuccess] = useContext(successContext)
+
+    useEffect( () => {
+        let controller = new AbortController()
+
+        async function fetchData(){
+            const urlAudio = 'https://api.symbl.ai/v1/process/audio'
+            const requestOptionsAudio = {
+                method: 'POST',
+                headers: {
+                    'x-api-key': auth.accessToken,
+                    'Content-Type': 'audio/wave',
+                },
+                body: file,
+                signal: controller.signal
+            }
+            const requestOptions = {
+                method: 'GET',
+                headers: {
+                    'x-api-key': auth.accessToken,
+                }
+            }
+
+            await fetch(urlAudio, requestOptionsAudio)
+            .then((response) => {
+                return response.json()
+            })
+            .then((data) => {
+                const [jobId, id]  = [data.jobId, data.conversationId]
+                return [jobId, id]
+            })
+            .then( (ids) => {
+                function check(jobId){
+                    fetch(`https://api.symbl.ai/v1/job/${jobId}`, requestOptions)
+                    .then(response => response.json())
+                    .then( data => {
+                        if (data.status === 'in_progress'){
+                            check(data.id)
+                            return
+                        }
+                        if (data.status === 'completed'){
+                            setId(ids[1])
+                            setSuccess(true);
+                            setLoading(false);
+                        }
+                    })
+                }
+                check(ids[0])
+            }).catch(err => console.log(err, err.message))
+        }
+
+        file && fetchData().catch(err => console.log(err.message))
+
+        return((m => {
+            controller.abort()
+        })
+    },[file])
+
+    return id
+}
+```
+
+There are 2 API requests here, the first one is a POST request to Symbl's Async Audio API endpoint to process the uploaded audio file. This Asycn Audio returns a Conversation ID and a Job ID.
+
+We can use the returned Job ID to check the progress status of the Async Audio API. The second API request is a GET request to Symbl's Job API endpoint recursively that will returns the status of the previous Async Audio API call which is either 'in_progress' or 'completed'. Once the Job API return 'completed', we will update the `success` state to `true` and `loading` state to `false`.
+
+Finally, we update the global state `id` with our new Conversation ID returned from Async Audio API which is ready to used with Symbl's Conversation API.
+
+To complete the Audio component, let's add some styling for this component like the following:
+
+`.../Audio/style.js`
+
+```jsx
+import { green } from "@material-ui/core/colors";
+import { makeStyles } from "@material-ui/core/styles";
+
+export const useStyles = makeStyles((theme) => ({
+  wrapper: {
+    position: "relative",
+  },
+  buttonSuccess: {
+    backgroundColor: green[500],
+    "&:hover": {
+      backgroundColor: green[700],
+    },
+  },
+  fabProgress: {
+    color: green[500],
+    position: "absolute",
+    top: -6,
+    left: -6,
+    zIndex: 1,
+  },
+  buttonProgress: {
+    color: green[500],
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    marginTop: -12,
+    marginLeft: -12,
+  },
+}));
+```
+
+### Creating UI for Topics Generated
+
+Of course, we will need to create a UI to display the topics generated from the Conversation API. We will use `<Chip/>` from Material-UI to display each topic.
+
+`.../Topics/Topics.js`
+
+```jsx
+import React, { useContext } from "react";
+import { Box, Chip, Paper, Typography } from "@material-ui/core";
+import LabelIcon from "@material-ui/icons/Label";
+
+import { idContext } from "../../Store";
+import useConversationAPI from "./hooks";
+
+export default function Topics(props) {
+  const [id] = useContext(idContext);
+  const datas = useConversationAPI(id);
+
+  return (
+    <Paper elevation={4}>
+      <Box p={2}>
+        <Typography variant="h6">Topics</Typography>
+        {datas.map((data) => {
+          console.log(data);
+          return (
+            <div key={data[0]}>
+              <Chip
+                key={data[0]}
+                label={data[2]}
+                variant="outlined"
+                color="primary"
+                size="small"
+                icon={<LabelIcon />}
+              />
+              <br />
+            </div>
+          );
+        })}
+      </Box>
+    </Paper>
+  );
+}
+```
+
+### Fetch Conversation API in useEffect
+
+Once the `id` state is updated or changed, we will make API request to Symbl's Conversation API using the Conversation ID returned from the previous `useEffect` hook. Let's code the fetch request to generates the Topics like the following:
+
+`.../Topics/hooks.js`
+
+```jsx
+import { useEffect, useState } from "react";
+
+import auth from "../../auth.json";
+
+export default function useConversationAPI(id) {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    let controller = new AbortControcller();
+
+    function fetchData() {
+      const requestOptions = {
+        method: "GET",
+        headers: {
+          "x-api-key": auth.accessToken,
+        },
+      };
+      fetch(`https://api.symbl.ai/v1/conversations/${id}/topics`, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.topics) {
+            const item = data.topics.map((item) => [item.id, item.type, item.text]);
+            setData(item);
+          }
+        });
+    }
+    id && fetchData();
+
+    return () => {
+      controller.abort();
+    };
+  }, [id]);
+
+  return data;
+}
+```
+
+In the code above, when the `id` state is `true`, we are making api call using `fetch` to Symbl's Conversation API specifically GET Topics by specifying the Conversation ID in the API url that will returns the topics generated from the uploaded audio file.
+
+We can delete `.../Topics/style.js` since we don't need it.
+
+### Rendering Audio and Topics components
+
+We only want to render Topics components after we uploaded the audio and topics generated, and only populate the UI with the topics. For this, we can again use the global state `id` and write a conditional rendering statement using `&&`. We can remove the previous "Hello World" statement.
+
+`./src/App.js`
+
+```jsx
+import React, { useContext } from "react";
+
+import Audio from "./components/Audio";
+import Topics from "./components/Topics/Topics";
+import { idContext } from "./Store";
+
+function App() {
+  const [id] = useContext(idContext);
+
+  return (
+    <div>
+      <Audio />
+      {id && <Topics />}
+    </div>
+  );
+}
+```
+
+Let's add some responsive layout styling with padding using Material-UI's `<Grid/>` and `<Box/>`.
+
+`./src/App.js`
+
+```jsx
+import React, { useContext } from "react";
+import { Box, Grid } from "@material-ui/core";
+
+import Audio from "./components/Audio";
+import Topics from "./components/Topics/Topics";
+import { idContext } from "./Store";
+
+function App() {
+  const [id] = useContext(idContext);
+
+  return (
+    <div>
+      <Grid container>
+        <Grid item xs={false} sm={2}></Grid>
+        <Grid item xs={12} sm={8}>
+          <Box>
+            <Box padding={1}>
+              <Audio />
+            </Box>
+            <Box padding={1}>{id && <Topics />}</Box>
+          </Box>
+        </Grid>
+        <Grid item xs={false} sm={2}></Grid>
+      </Grid>
+    </div>
+  );
+}
+export default App;
+```
+
+## Run The App
+
+And thats it! Now you have a fully functional react app that can take an audio file — in mono audio format —, process it, show a loading progress while it is been processed, and display all the topics keywords within the conversation in the audio file. You can go to `[http://localhost:3000](http://localhost:3000)` to view the running app and test it.
+
+Note: This article was originally posted on https://symbl.ai/blog/use-async-audio-api-in-your-react-app/

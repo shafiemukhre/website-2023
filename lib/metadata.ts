@@ -6,22 +6,22 @@ export const BASE_URL =
   process.env.VERCEL_URL || process.env.NEXT_PUBLIC_BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
 
 export const defaultAuthor: AuthorType = {
-  name: "Amy Shields",
-  handle: "@amyshieldsfake",
+  name: "Shafie Mukhre",
+  handle: "@shafiemukhre",
   socialProfiles,
-  email: "definitelyfake@nevermind.com",
-  website: "https://nextjs.org",
-  jobTitle: "Frontend Engineer & UI Designer",
-  company: "Unicorns & Co.",
+  email: "shafiemukhre@gmail.com",
+  website: "https://shafiemukhre.com",
+  jobTitle: "Fullstack Software Engineer (Frontend focus)",
+  company: "",
   availableForWork: true,
   location: {
-    city: "Los Angeles",
+    city: "San Francisco",
     media: "/losangeles.jpg",
   },
 };
 
 const defaultTitle = `${defaultAuthor.name}'s Blog`;
-const defaultDescription = `I'm ${defaultAuthor.name}. Building hackin’ cool digital products around the world 🌴.`;
+const defaultDescription = `I'm ${defaultAuthor.name}, a fullstack software engineer who love building useful products.`;
 
 const siteMetadata: SiteMetaData = {
   title: {
@@ -29,8 +29,8 @@ const siteMetadata: SiteMetaData = {
     default: defaultTitle,
   },
   description: defaultDescription,
-  siteRepo: "https://github.com/thedevdavid/digital-garden",
-  newsletterUrl: "https://developreneur.davidlevai.com",
+  siteRepo: "https://github.com/shafiemukhre/website-2023",
+  newsletterUrl: "https://shafie.substack.com",
   analyticsProvider: "umami",
 };
 

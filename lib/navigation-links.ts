@@ -6,27 +6,12 @@ const content: ContentNavItem[] = [
   {
     title: "Blog",
     href: "/posts",
-    description: "Blogposts. Mostly about web development. Or chicken fingers",
+    description: "Writings on Web Dev, Distributed System and Generative AI.",
   },
   {
-    title: "Speaking",
-    href: "/speaking",
-    description: "My previous (and current) talks, workshops, and other speaking engagements.",
-  },
-  {
-    title: "Videos",
-    href: defaultAuthor.socialProfiles.find((platform) => platform.name === "youtube")?.link as string,
-    description: "My YouTube channel where I talk about web development.",
-  },
-  {
-    title: "Newsletter",
+    title: "Personal Newsletter",
     href: siteMetadata.newsletterUrl,
-    description: "My newsletter about software development",
-  },
-  {
-    title: "Teaching",
-    href: "/teaching",
-    description: "I teach others. Sometimes for free, sometimes for money.",
+    description: "My casual writings on non-technical topics, coming soon.",
   },
 ];
 
@@ -40,11 +25,7 @@ export const navigationLinks: NavItem[] = [
     href: "/projects",
   },
   {
-    title: "Uses",
-    href: "/uses",
-  },
-  {
-    title: "Now",
-    href: "/now",
+    title: "About",
+    href: "/about",
   },
 ];

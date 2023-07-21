@@ -1,0 +1,47 @@
+---
+title: "How to pass data from child component to its parent in ReactJS?"
+publishedDate: "2020-12-07"
+lastUpdatedDate: "2020-12-07"
+tags:
+  - frontend
+description: How to pass data from child component to its parent in ReactJS?
+status: published
+---
+
+You can create the state in the ParentComponent using `useState` and pass down the `setIsParentData` function as prop into the ChildComponent.
+
+In the ChildComponent, update the data using the received function through prop to send the data back to ParentComponent.
+
+I use this technique especially when my code in the ParentComponent is getting too long, therefore I will create child components from the ParentComponent. Typically, it will be only 1 level down and using useContext or redux seems overkill in order to share states between components.
+
+`ParentComponent.js`
+
+```javascript
+import React, { useState } from 'react';
+import ChildComponent from './ChildComponent';
+
+export function ParentComponent(){
+  const [isParentData, setIsParentData] = useState(True);
+
+  return (
+    <p>is this a parent data?: {isParentData}</p>
+    <ChildComponent toChild={isParentData} sendToParent={setIsParentData} />
+  );
+}
+```
+
+`ChildComponent.js`
+
+```javascript
+import React from 'react';
+
+export function ChildComponent(props){
+
+  return (
+    <button onClick={() => {props.sendToParent(False)}}>Update</button>
+    <p>The state of isParentData is {props.toChild}</p>
+  );
+};
+```
+
+Note: Originally answered on [stackoverflow](https://stackoverflow.com/questions/38394015/how-to-pass-data-from-child-component-to-its-parent-in-reactjs/65178628#65178628)
