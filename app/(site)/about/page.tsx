@@ -8,7 +8,7 @@ import { defaultAuthor } from "@/lib/metadata";
 import { Mdx } from "@/components/mdx-components";
 
 async function getAboutPage() {
-  const aboutPage = allPages.find((page) => page.slug === "about");
+  const aboutPage = allPages.find((page) => page.slug === "aboutme");
 
   if (!aboutPage) {
     null;
