@@ -11,7 +11,7 @@ export const defaultAuthor: AuthorType = {
   socialProfiles,
   email: "shafiemukhre@gmail.com",
   website: "https://shafiemukhre.com",
-  jobTitle: "Fullstack (Frontend) Engineer",
+  jobTitle: "Software Engineer",
   company: "",
   availableForWork: true,
   location: {
