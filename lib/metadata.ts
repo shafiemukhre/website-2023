@@ -13,7 +13,7 @@ export const defaultAuthor: AuthorType = {
   website: "https://shafiemukhre.com",
   jobTitle: "Software Engineer",
   company: "",
-  availableForWork: true,
+  availableForWork: false,
   location: {
     city: "San Francisco",
     media: "/losangeles.jpg",
