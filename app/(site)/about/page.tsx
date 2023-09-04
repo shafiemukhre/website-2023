@@ -1,11 +1,9 @@
 import Image from "next/image";
-import Link from "next/link";
 import { allPages, allPosts } from "@/.contentlayer/generated";
 import { format, parseISO } from "date-fns";
-import { ArrowRight } from "lucide-react";
 
 import { defaultAuthor } from "@/lib/metadata";
-import { Mdx } from "@/components/mdx-components";
+import { Mdx } from "@/components/mdx";
 
 async function getAboutPage() {
   const aboutPage = allPages.find((page) => page.slug === "aboutme");

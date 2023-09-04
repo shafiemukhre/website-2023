@@ -18,7 +18,7 @@ export const socialProfiles: SocialProfile[] = [
     link: "https://threads.net/@shafiemukhre",
   },
   {
-    name: "twitter",
+    name: "x",
     link: "https://twitter.com/shafiemukhre",
   },
   {
