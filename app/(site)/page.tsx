@@ -44,9 +44,6 @@ export default async function Home() {
               See all posts <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </div>
-          <aside className="w-full">
-            <Sidebar />
-          </aside>
         </div>
       </div>
     </div>

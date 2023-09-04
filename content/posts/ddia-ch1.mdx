@@ -1,0 +1,83 @@
+---
+title: "DDIA Chapter 1: Reliable, Scalable, and Maintainable Applications"
+publishedDate: "2023-09-03"
+lastUpdatedDate: "2023-09-03"
+tags:
+  - backend
+  - booknotes
+description: "Notes on Chapter 1 of Designing Data-Intensive Applications by Martin Kleppmann"
+status: draft
+---
+
+This is the start of booknotes for [Designing Data-Intensive Applications](https://dataintensive.net/) by Martin Kleppmann. I will try to write using simple words, provide visual aids, and focus/emphasize more towards software developments with minimal mentions for other areas such as devops, security, etc.
+
+My approach of writing this booknote is mainly to highlight important area/sub-topic/paragraph that I resonates with and those that I would like to understand/memorize for a long time. I am not trying summarize every sub-topics in the book. I might come back in the future and update the booknotes. I try to use original words as much as possible.
+
+The first four chapters of DDIA covers the fundamental ideas that apply to all data systems, whe on a single machine and across a distributed cluster.
+
+Chapter 1 of DDIA introduces the terminologies and approaches for the book. Chapter 1 also defines the words _reliability_, _scalibility_ and _maintainability_.
+
+## Data Intensive Applications
+
+Most applications today are data-intensive rather than compute-intensive. Data-intensive application is made of common functionalities such as databases, caches, search indexes, stream processing, batch processing and more.
+
+When we combine all these functionalities together, we get a data system that's implementated behind an API. There are many solutions/tecnologies for each of these functionalities. And when we combine these functionalities (each with their own trade-offs and purposse), problem will arise unless we do it properly by paying attention to 3 main concerns: **_reliability_**, **_scalability_**, and **_maintainability_**.
+
+I think the goal of this book is to understand all these standard functionalities from first principles, and how to combine and implement them to build a system that's reliable, scalable, and maintainable.
+
+[Note]
+
+- Redis is a datastore that also used as message queues
+- Apache Kafka is a message queue with database-like durability guarantees
+- Memcached is a caching layer
+- Elasticsearch and Solr are a full-text search server
+
+## Reliability
+
+_Reliability_ means making the systems work correctly (performing the correct function at the desired level of performance), even when faults occur. Faults can be in hardware, software (bugs that are typically systematic and hard to deal with), or humans.
+
+_Fault_ = things that can go wrong. A fault is usually defined as one component of the system deviating from its spec.
+
+_Fault-tolerant_ or _fault-resilient_ = systems that anticipate faults and can cope with them
+
+Faults is not the same as failure.
+
+_Failure_ = when the system as a whole stops providing the required service to the user. This is usually caused by faults.
+
+It is impossible to reduce the proablility of a fault to zero. Therefore, it is best to design fault-tolerant mechanisms that prevent faults from causing failures.
+
+Counterintuitively, it can make sense to increase the rate of faults by triggering them deliberately, in order to ensure that the system continues to work even when faults occur. For examples:
+
+- Randomly killing individual process without warning. Many critical bugs are actually due to poor error handling
+- The Netflix _Chaos Monkey_ randomly terminates virtual machine instances and containers that run inside of your production environment
+
+There are situations in which we may choose to sacrifice reliability in order to reduce development cost (e.g., when developing prototype product for an unproven market) or operation cost (e.g., for a service with a very narrow profit margin) -- but we should be very concious of when we are cutting corners.
+
+## Scalability
+
+_Scalability_ means having strategies for keeping performance good, even when load increases. In a scalable system you can add processing capacity in order to remain reliable under high load.
+
+Some examples of increases in load:
+
+- the system has grown from 10,000 concurrent users to 100,000 concurrent users, or from 1 million to 10 million
+- processing much larger volumes of data than before
+
+Discussing scalibility means asking questions such as:
+
+- "If the system grows in a particular way, what are our options for coping with the growth?"
+- "How can we add computing resources to handle the additional load?"
+
+[To write] Twitter's home timelines as an example of describing load
+
+Describing Load: Load is best described in terms of numbers (called _load parameters_) and the best choice of parameters depends on the architecture of your system. It may be
+
+- requests per second to a web server,
+- the ratio of reads to writes in a database,
+- the number of simultaneously active users in a chat room,
+- the hit rate on a cache or something else.
+
+It depends on the architecture of your system. Perhaps the average case is what matters, or perhaps your bottleneck is dominated by a small number of extreme cases.
+
+Describing Performance:
+
+## Maintainability
