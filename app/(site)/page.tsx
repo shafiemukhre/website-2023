@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { allPages, allPosts } from "contentlayer/generated";
 import { ArrowRight } from "lucide-react";
@@ -6,7 +5,6 @@ import { ArrowRight } from "lucide-react";
 import siteMetadata, { defaultAuthor } from "@/lib/metadata";
 import { sortByDate } from "@/lib/utils";
 import { HeroMinimal } from "@/components/hero-minimal";
-import { Sidebar } from "@/components/home-sidebar";
 import PostPreview from "@/components/post-preview";
 
 async function getAboutPage() {
