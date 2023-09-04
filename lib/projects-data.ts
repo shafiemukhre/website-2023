@@ -7,20 +7,6 @@ export const projects = [
     mediaType: "image",
   },
   {
-    title: "Flashcode",
-    description: `AI teacher for competitive programming. WIP.`,
-    href: "https://github.com/shafiemukhre",
-    mediaSrc: "/images/flashcode1.png",
-    mediaType: "image",
-  },
-  {
-    title: "ImbaChat by imbamode",
-    description: `Coding assitant chatbot. Also WIP.`,
-    href: "https://github.com/imbamodehq",
-    mediaSrc: "/images/imbachat1.png",
-    mediaType: "image",
-  },
-  {
     title: "Image Segmentation App",
     description: `A react web application tool to create image segmentation as training dataset for deep learning model.`,
     href: "https://github.com/shafiemukhre/image-segmentation-app",

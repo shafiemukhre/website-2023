@@ -7,10 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.2] - 2023-09-02
+
+### Changed
+
+- Updated non-critical dependencies
+
+## [0.7.1] - 2023-08-22
+
 ### Added
 
-- Convertkit newsletter provider
+- Google Analytics provider
+
+### Fixed
+
+- Footer social icons responsive issues
+
+## [0.7.0] - 2023-08-19
+
+### Added
+
 - Plausible analytics provider
+- Math and Katex support
+- Author content definition
+- Tweet MDX component
+- YT Video MDX component
+- Newsletter CTA MDX component
+- Documentation updates
+- Announcement banner
+
+### Changed
+
+- Small SEO updates
+- Codebase and type fixes
+- Design updates
 
 ## [0.6.0] - 2023-07-16
 

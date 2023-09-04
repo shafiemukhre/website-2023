@@ -10,7 +10,7 @@ const content: ContentNavItem[] = [
   },
   {
     title: "Personal Notes",
-    href: siteMetadata.newsletterUrl,
+    href: siteMetadata.newsletterUrl as string,
     description: "My casual writings on non-technical topics, coming soon.",
   },
 ];
