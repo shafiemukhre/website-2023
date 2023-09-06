@@ -42,7 +42,7 @@ const siteMetadata: SiteMetaData = {
     link: "https://www.producthunt.com/@shafiemukhre",
   },
   postsPerPage: 10,
-  postsOnHomePage: 8,
+  postsOnHomePage: 3,
   projectsOnHomePage: 4,
 };
 

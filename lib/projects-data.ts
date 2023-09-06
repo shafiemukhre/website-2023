@@ -10,7 +10,7 @@ export const projects = [
     title: "Image Segmentation App",
     description: `A react web application tool to create image segmentation as training dataset for deep learning model.`,
     href: "https://github.com/shafiemukhre/image-segmentation-app",
-    mediaSrc: "/images/sam1.png",
+    mediaSrc: "/images/sam2.png",
     mediaType: "image",
   },
   {
