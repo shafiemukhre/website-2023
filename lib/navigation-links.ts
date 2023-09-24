@@ -9,7 +9,7 @@ const content: ContentNavItem[] = [
     description: "Writings on Web Dev, Distributed System and Generative AI.",
   },
   {
-    title: "Personal Notes",
+    title: "Personal Blogs",
     href: siteMetadata.newsletterUrl as string,
     description: "My casual writings on non-technical topics, coming soon.",
   },
