@@ -21,7 +21,9 @@ export function HeroMinimal({ title, subtitle }: HeroProps) {
         alt={defaultAuthor.name}
       />
       <h1 className="font-heading text-2xl font-bold leading-tight tracking-tight">{defaultAuthor.name}</h1>
-      <p className="text-muted-foreground">{defaultAuthor.jobTitle}</p>
+      <p className="text-muted-foreground">
+        {defaultAuthor.jobTitle} at {defaultAuthor.company}
+      </p>
       <p className="my-2 text-muted-foreground">{title}</p>
     </div>
   );

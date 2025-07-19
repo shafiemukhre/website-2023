@@ -4,14 +4,14 @@ import siteMetadata, { defaultAuthor } from "@/lib/metadata";
 
 const content: ContentNavItem[] = [
   {
-    title: "Engineering Notes",
+    title: "Blogs",
     href: "/posts",
     description: "Writings on Web Dev, Distributed System and Generative AI.",
   },
   {
-    title: "Personal Blogs",
-    href: siteMetadata.newsletterUrl as string,
-    description: "My casual writings on non-technical topics, coming soon.",
+    title: "Software Notes",
+    href: siteMetadata.softwareNotesUrl as string,
+    description: "Collections of notes to build great software. Towards understanding and mastery.",
   },
 ];
 

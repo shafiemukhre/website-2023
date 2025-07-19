@@ -14,7 +14,7 @@ export const defaultAuthor: AuthorType = {
   email: "shafiemukhre@gmail.com",
   website: "https://shafiemukhre.com",
   jobTitle: "Software Engineer",
-  company: "",
+  company: "Docusign",
   availableForWork: false,
   location: {
     city: "San Francisco",
@@ -34,6 +34,7 @@ const siteMetadata: SiteMetaData = {
   siteRepo: "https://github.com/shafiemukhre/website-2023",
   newsletterProvider: "substack",
   newsletterUrl: "https://shafie.substack.com",
+  softwareNotesUrl: "https://software.shafiemukhre.com",
   analyticsProvider: "umami",
   defaultTheme: "system",
   activeAnnouncement: false,

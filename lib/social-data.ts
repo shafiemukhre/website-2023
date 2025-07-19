@@ -19,7 +19,7 @@ export const socialProfiles: SocialProfile[] = [
   },
   {
     name: "x",
-    link: "https://twitter.com/shafiemukhre",
+    link: "https://twitter.com/shafieos",
   },
   {
     name: "youtube",

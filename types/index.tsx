@@ -39,6 +39,7 @@ export type SiteMetaData = {
   siteRepo: string;
   newsletterProvider?: NewsletterProvider;
   newsletterUrl?: string;
+  softwareNotesUrl?: string;
   analyticsProvider?: AnalyticsProvider;
   defaultTheme: "light" | "dark" | "system";
   activeAnnouncement: boolean;
