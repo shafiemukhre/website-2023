@@ -2,7 +2,7 @@ export const projects = [
   {
     title: "Statsboard",
     description: `A web-app to analyze data and create dashboards. WIP, currently working on updated version.`,
-    href: "https://github.com/shafiemukhre/statsbook",
+    href: "https://github.com/shafiemukhre/statsboard",
     mediaSrc: "/images/dashbook1.png",
     mediaType: "image",
   },
